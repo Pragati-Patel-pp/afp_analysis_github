@@ -3,7 +3,7 @@
 #include "AsgTools/AnaToolHandle.h"
 
 #include <EventLoop/Algorithm.h>
-#include <AfpTools/AfpTool.h>
+#include <AfpAnalysisToolbox/AfpTool.h>
 
 class AfpAnalysisExample : public EL::Algorithm
 {
@@ -26,7 +26,7 @@ class AfpAnalysisExample : public EL::Algorithm
     static constexpr int nstations = 4;
     static constexpr int nlayers = 4;
 
-    asg::AnaToolHandle<AfpTools::IAfpTool> m_AfpTool; //!
+    asg::AnaToolHandle<afp::IAfpTool> m_AfpTool; //!
 
     ClassDef(AfpAnalysisExample, 1);
 };

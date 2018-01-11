@@ -58,7 +58,7 @@ EL::StatusCode AfpAnalysisExample :: changeInput (bool firstFile)
 
 EL::StatusCode AfpAnalysisExample :: initialize ()
 {
-  ASG_SET_ANA_TOOL_TYPE( m_AfpTool, AfpTools::AfpTool);
+  ASG_SET_ANA_TOOL_TYPE( m_AfpTool, afp::AfpTool);
   m_AfpTool.setName("AfpTool");
 
   return EL::StatusCode::SUCCESS;
