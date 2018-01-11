@@ -11,7 +11,11 @@ cd ../run
 runAfpAnalysisExample
 ```
 
-The analysis code is located in `source/AfpAnalysis/`. If you modify it and want to recompile you need to go to the `build` directory and run
+The analysis code is located in `source/AfpAnalysis/`. If you modify it and want to recompile you need to go to the `build` directory
+```bash
+cd ../build
+```
+and run
 ```bash
 cmake ../source
 make
@@ -19,6 +23,7 @@ make
 
 You should run the code from `run`. Remember to either remove `submitDir` created in a previous execution or to specify a new directory
 ```bash
+cd ../run
 runAfpAnalysisExample submitDir1
 ```
 
