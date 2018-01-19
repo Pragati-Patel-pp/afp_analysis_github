@@ -35,3 +35,5 @@ asetup --restore
 source */setup.sh
 ```
 A tutorial on xAOD analysis can be found in https://atlassoftwaredocs.web.cern.ch/ABtutorial
+
+In case of problems of questions do not hesitate to contact rafal.staszewski@ifj.edu.pl.
