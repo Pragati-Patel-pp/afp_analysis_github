@@ -99,8 +99,8 @@ EL::StatusCode AfpAnalysisExample :: execute ()
   int nc[4][4] = {0};
   int ncs[4] = {0};
   for(auto c : *(m_AfpTool->getClusters())){
-    int s = c->stationID;
-    int l = c->layerID;
+    int s = c->stationID();
+    int l = c->layerID();
     nc[s][l]++;
     ncs[s]++;
   }
@@ -108,9 +108,14 @@ EL::StatusCode AfpAnalysisExample :: execute ()
   int nt[4] = {0};
 
   for(auto track : *(m_AfpTool->getTracks())){
-    int s = track->stationID;
+    int s = track->stationID();
     nt[s]++;
   }
+  
+  if (m_AfpTool->getProtons()->size() != 0)
+    for (auto proton:*(m_AfpTool->getProtons())) {
+      std::cout << proton << std::endl;
+    }
 
   m_AfpTool->clean();
 
