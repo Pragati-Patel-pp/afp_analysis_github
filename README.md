@@ -2,11 +2,16 @@
 
 In order to run an example AFP analysis log in to `lxplus` and do:
 ```bash
-setupATLAS
 mkdir MyAfpAnalysis
 cd MyAfpAnalysis
-git clone https://:@gitlab.cern.ch:8443/afp/AfpAnalysisToolbox_example.git source
-source source/AfpAnalysis/share/setup.sh
+git clone --recursive https://:@gitlab.cern.ch:8443/afp/AfpAnalysisToolbox_example.git source
+mkdir build run
+cd build
+setupATLAS
+asetup 21.2,AnalysisBase,latest
+cmake ../source/
+make
+source */setup.sh
 cd ../run
 runAfpAnalysisExample
 ```

@@ -1,0 +1,6 @@
+[submodule "AfpAnalysisToolbox"]
+	path = AfpAnalysisToolbox
+	url = https://:@gitlab.cern.ch:8443/afp/AfpAnalysisToolbox.git
+[submodule "FPTracker"]
+	path = FPTracker
+	url = https://:@gitlab.cern.ch:8443/rafal/FPTracker.git
