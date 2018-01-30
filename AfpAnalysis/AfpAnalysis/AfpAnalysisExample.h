@@ -2,29 +2,21 @@
 
 #include "AsgTools/AnaToolHandle.h"
 
-#include <EventLoop/Algorithm.h>
+#include <AnaAlgorithm/AnaAlgorithm.h>
 #include <AfpAnalysisToolbox/AfpTool.h>
 
-class AfpAnalysisExample : public EL::Algorithm
+class AfpAnalysisExample : public EL::AnaAlgorithm
 {
   
   public:
    
-    AfpAnalysisExample ();
+    AfpAnalysisExample (const std::string& name, ISvcLocator* pSvcLocator);
 
-    virtual EL::StatusCode setupJob (EL::Job& job);
-    virtual EL::StatusCode fileExecute ();
-    virtual EL::StatusCode histInitialize ();
-    virtual EL::StatusCode changeInput (bool firstFile);
-    virtual EL::StatusCode initialize ();
-    virtual EL::StatusCode execute ();
-    virtual EL::StatusCode postExecute ();
-    virtual EL::StatusCode finalize ();
-    virtual EL::StatusCode histFinalize ();
+    virtual StatusCode initialize ();
+    virtual StatusCode execute ();
+    virtual StatusCode finalize ();
 
   private:
-    static constexpr int nstations = 4;
-    static constexpr int nlayers = 4;
 
     asg::AnaToolHandle<afp::IAfpTool> m_AfpTool; //!
 

@@ -31,8 +31,13 @@ You should run the code from `run`. Remember to either remove `submitDir` create
 cd ../run
 runAfpAnalysisExample submitDir1
 ```
+You can also use Python steering macro:
+```bash
+../source/runAfpAnalysisExample -s submitDir2
+```
 
-Every time you log in you need to do;
+
+Every time you log in you need to do:
 ```bash
 setupATLAS
 cd MyAfpAnalysis/build
