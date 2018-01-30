@@ -18,57 +18,26 @@
 ClassImp(AfpAnalysisExample)
 
 
-AfpAnalysisExample :: AfpAnalysisExample ()
+AfpAnalysisExample :: AfpAnalysisExample (const std::string& name, ISvcLocator* pSvcLocator)
+      : EL::AnaAlgorithm (name, pSvcLocator)
 {
 }
 
 
 
-EL::StatusCode AfpAnalysisExample :: setupJob (EL::Job& job)
-{
-  job.useXAOD ();
-  ANA_CHECK_SET_TYPE (EL::StatusCode); 
-  ANA_CHECK(xAOD::Init());
-
-  return EL::StatusCode::SUCCESS;
-}
-
-
-
-EL::StatusCode AfpAnalysisExample :: histInitialize ()
-{
-    return EL::StatusCode::SUCCESS;
-}
-
-
-
-EL::StatusCode AfpAnalysisExample :: fileExecute ()
-{
-  return EL::StatusCode::SUCCESS;
-}
-
-
-
-EL::StatusCode AfpAnalysisExample :: changeInput (bool firstFile)
-{
-  return EL::StatusCode::SUCCESS;
-}
-
-
-
-EL::StatusCode AfpAnalysisExample :: initialize ()
+StatusCode AfpAnalysisExample :: initialize ()
 {
   ASG_SET_ANA_TOOL_TYPE( m_AfpTool, afp::AfpTool);
   m_AfpTool.setName("AfpTool");
 
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
 
 
-EL::StatusCode AfpAnalysisExample :: execute ()
+StatusCode AfpAnalysisExample :: execute ()
 {
-  ANA_CHECK_SET_TYPE (EL::StatusCode); // set type of return code you are expecting (add to top of each function once)
+  ANA_CHECK_SET_TYPE (StatusCode); // set type of return code you are expecting (add to top of each function once)
 
   xAOD::TEvent* event = wk()->xaodEvent();
 
@@ -141,30 +110,18 @@ EL::StatusCode AfpAnalysisExample :: execute ()
 
   m_AfpTool->clean();
 
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
 
 
-EL::StatusCode AfpAnalysisExample :: postExecute ()
-{
-  return EL::StatusCode::SUCCESS;
-}
-
-
-
-EL::StatusCode AfpAnalysisExample :: finalize ()
+StatusCode AfpAnalysisExample :: finalize ()
 {
 
 
-  return EL::StatusCode::SUCCESS;
+  return StatusCode::SUCCESS;
 }
 
 
-
-EL::StatusCode AfpAnalysisExample :: histFinalize ()
-{
-  return EL::StatusCode::SUCCESS;
-}
 
 // vim: expandtab tabstop=8 shiftwidth=2 softtabstop=2
