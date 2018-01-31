@@ -51,12 +51,13 @@ StatusCode AfpAnalysisExample :: execute ()
   m_AfpTool->reco(); // Do AFP reconstruction
 
   // Hits
-  ANA_MSG_INFO("Event contains " << m_AfpTool->getHits()->size() << " AFP Si hits");
+  ANA_MSG_INFO("===== HITS =====");
+  ANA_MSG_INFO("Event contains " << m_AfpTool->hits()->size() << " AFP Si hits");
 
   int nh[4][4] = {0};
   int nhs[4] = {0};
 
-  for(auto hit : *(m_AfpTool->getHits())){
+  for(auto hit : *(m_AfpTool->hits())){
     int s = hit->stationID();
     int l = hit->pixelLayerID();
     nh[s][l]++;
@@ -70,14 +71,15 @@ StatusCode AfpAnalysisExample :: execute ()
   }
 
   // Clusters
-  ANA_MSG_INFO("Event contains " << m_AfpTool->getClusters()->size() << " AFP Si clusters");
+  ANA_MSG_INFO("===== CLUSTERS =====");
+  ANA_MSG_INFO("Event contains " << m_AfpTool->clusters()->size() << " AFP Si clusters");
   
   int nc[4][4] = {0};
   int ncs[4] = {0};
-  for(auto c : *(m_AfpTool->getClusters())){
-    ATH_MSG_INFO("\t" << c);
+  for(auto c : *(m_AfpTool->clusters())){
+    ATH_MSG_INFO("\t" << c->xLocal()<< ", "<<c->yLocal()<<", "<<c->zLocal());
     int s = c->stationID();
-    int l = c->layerID();
+    int l = c->pixelLayerID();
     nc[s][l]++;
     ncs[s]++;
   }
@@ -89,26 +91,35 @@ StatusCode AfpAnalysisExample :: execute ()
   }
 
   // Tracks
-  ANA_MSG_INFO("Event contains " << m_AfpTool->getTracks()->size() << " AFP tracks");
+  ANA_MSG_INFO("===== TRACKS =====");
+  ANA_MSG_INFO("Event contains " << m_AfpTool->tracks()->size() << " AFP tracks");
   
   int nt[4] = {0};
-  for(auto t : *(m_AfpTool->getTracks())){
+  for(auto t : *(m_AfpTool->tracks())){
     int s = t->stationID();
-    ATH_MSG_INFO("\t" << t);
+    ATH_MSG_INFO("\t" << t->stationID()<<" "<<t->xLocal()<<" "<<t->yLocal());
     nt[s]++;
   }
 
   for(int s=0; s<4; s++)
     ANA_MSG_INFO("Event contains " << nt[s] << " AFP tracks in station " << s);
 
+  
+  ANA_MSG_INFO("===== STORE GATE TRACKS =====");
+
+  const xAOD::AFPTrackContainer* afpTracks = 0;
+  ANA_CHECK(event->retrieve( afpTracks, "AFPTrackContainer") );
+  for(auto t : *afpTracks)
+    ATH_MSG_INFO("\t" << t->stationID()<<" "<<t->xLocal()<<" "<<t->yLocal());
+
+  
   // Protons
-  ANA_MSG_INFO("Event contains " << m_AfpTool->getProtons()->size() << " AFP protons");
+  ANA_MSG_INFO("===== PROTONS =====");
+  ANA_MSG_INFO("Event contains " << m_AfpTool->protons()->size() << " AFP protons");
 
-  for(auto proton : *(m_AfpTool->getProtons())){
-    ATH_MSG_INFO("\t" << proton);
+  for(auto proton : *(m_AfpTool->protons())){
+    ATH_MSG_INFO("\t" << proton->px()<<", "<<proton->py()<<", "<<proton->pz()<<", "<<proton->e());
   }
-
-  m_AfpTool->clean();
 
   return StatusCode::SUCCESS;
 }
