@@ -48,7 +48,7 @@ StatusCode AfpAnalysisExample :: execute ()
   ANA_MSG_INFO("New event: " << eventInfo->eventNumber());
   ANA_MSG_INFO("run: " << eventInfo->runNumber() << " lumi block: " << eventInfo->lumiBlock());
 
-  m_AfpTool->reco(); // Do AFP reconstruction
+  ANA_CHECK(m_AfpTool->reco()); // Do AFP reconstruction
 
   // Hits
   ANA_MSG_INFO("===== HITS =====");
