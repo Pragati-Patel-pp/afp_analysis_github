@@ -27,7 +27,7 @@ AfpAnalysisExample :: AfpAnalysisExample (const std::string& name, ISvcLocator* 
 
 StatusCode AfpAnalysisExample :: initialize ()
 {
-  ASG_SET_ANA_TOOL_TYPE( m_AfpTool, afp::AfpTool);
+  ASG_SET_ANA_TOOL_TYPE( m_AfpTool, AFP::AfpTool);
   m_AfpTool.setName("AfpTool");
 
   return StatusCode::SUCCESS;
