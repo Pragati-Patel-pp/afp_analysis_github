@@ -18,7 +18,7 @@ class AfpAnalysisExample : public EL::AnaAlgorithm
 
   private:
 
-    asg::AnaToolHandle<afp::IAfpTool> m_AfpTool; //!
+    asg::AnaToolHandle<AFP::IAfpTool> m_AfpTool; //!
 
     ClassDef(AfpAnalysisExample, 1);
 };
