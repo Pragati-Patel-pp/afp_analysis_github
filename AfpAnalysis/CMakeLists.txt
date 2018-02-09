@@ -9,7 +9,7 @@ atlas_add_library (AfpAnalysisLib
   AfpAnalysis/*.h AfpAnalysis/*.ihh src/*.cxx ${AfpAnalysisDictSource}
   PUBLIC_HEADERS AfpAnalysis
   INCLUDE_DIRS
-  LINK_LIBRARIES EventLoop xAODRootAccess xAODForward AsgTools xAODEventInfo AfpAnalysisToolboxLib
+  LINK_LIBRARIES EventLoop xAODRootAccess xAODForward AsgTools xAODEventInfo AfpAnalysisToolsLib
   PRIVATE_LINK_LIBRARIES )
 
 atlas_add_executable (runAfpAnalysisExample util/runAfpAnalysisExample.cxx

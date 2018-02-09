@@ -3,7 +3,7 @@
 #include "AsgTools/AnaToolHandle.h"
 
 #include <AnaAlgorithm/AnaAlgorithm.h>
-#include <AfpAnalysisToolbox/AfpTool.h>
+#include <AfpAnalysisTools/AfpTool.h>
 
 class AfpAnalysisExample : public EL::AnaAlgorithm
 {
