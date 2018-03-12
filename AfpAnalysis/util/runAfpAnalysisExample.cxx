@@ -24,7 +24,7 @@ int main( int argc, char* argv[] ) {
 
   SH::SampleHandler sh;
 
-  const char* inputFilePath = gSystem->ExpandPathName ("/eos/user/r/rafal/AFP/data17_13TeV.00331975.physics_Main.merge.AOD.r10203_p3399/");
+  const char* inputFilePath = gSystem->ExpandPathName ("/eos/atlas/atlascerngroupdisk/det-afp/AnalysisData/Tutorial/data17_13TeV.00331975.physics_Main.merge.AOD.r10203_p3399/");
 
   SH::ScanDir().filePattern("*").scan(sh,inputFilePath);
 

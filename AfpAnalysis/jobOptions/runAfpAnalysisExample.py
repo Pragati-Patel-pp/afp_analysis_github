@@ -13,7 +13,7 @@ ROOT.xAOD.Init().ignore()
 import os
 sh = ROOT.SH.SampleHandler()
 sh.setMetaString( 'nc_tree', 'CollectionTree' )
-inputFilePath = "/eos/user/r/rafal/AFP/data17_13TeV.00331975.physics_Main.merge.AOD.r10203_p3399/"
+inputFilePath = "/eos/atlas/atlascerngroupdisk/det-afp/AnalysisData/Tutorial/data17_13TeV.00331975.physics_Main.merge.AOD.r10203_p3399/"
 ROOT.SH.ScanDir().filePattern( '*' ).scan( sh, inputFilePath )
 
 job = ROOT.EL.Job()
