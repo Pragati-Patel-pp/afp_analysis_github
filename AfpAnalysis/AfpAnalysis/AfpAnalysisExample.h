@@ -3,7 +3,7 @@
 #include "AsgTools/AnaToolHandle.h"
 
 #include <AnaAlgorithm/AnaAlgorithm.h>
-#include <AfpAnalysisTools/AfpTool.h>
+#include <AfpAnalysisTools/IAfpAnalysisTool.h>
 
 class AfpAnalysisExample : public EL::AnaAlgorithm
 {
@@ -18,9 +18,8 @@ class AfpAnalysisExample : public EL::AnaAlgorithm
 
   private:
 
-    asg::AnaToolHandle<AFP::IAfpTool> m_AfpTool; //!
+    asg::AnaToolHandle<AFP::IAfpAnalysisTool> m_afpTool; //!
 
-    ClassDef(AfpAnalysisExample, 1);
 };
 
 // vim: expandtab tabstop=8 shiftwidth=2 softtabstop=2

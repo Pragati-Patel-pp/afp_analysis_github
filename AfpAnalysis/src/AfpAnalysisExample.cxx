@@ -12,23 +12,27 @@
 #include <xAODForward/AFPSiHitContainer.h>
 #include <xAODForward/AFPSiHit.h>
 
+#include <AfpAnalysisTools/AfpAnalysisTool.h>
+
 #include <utility> 
 #include<iostream>
 
-ClassImp(AfpAnalysisExample)
 
-
-AfpAnalysisExample :: AfpAnalysisExample (const std::string& name, ISvcLocator* pSvcLocator)
-      : EL::AnaAlgorithm (name, pSvcLocator)
+AfpAnalysisExample :: AfpAnalysisExample (const std::string& name, ISvcLocator* pSvcLocator) : 
+  EL::AnaAlgorithm (name, pSvcLocator),
+  m_afpTool("AFP::AfpAnalysisTool/afpTool", this)
 {
+  m_afpTool.declarePropertyFor(this, "afpTool", "Tool providing AFP information");
+  m_afpTool.setTypeAndName ("AFP::AfpAnalysisTool/afpTool");
 }
 
 
 
 StatusCode AfpAnalysisExample :: initialize ()
 {
-  ASG_SET_ANA_TOOL_TYPE( m_AfpTool, AFP::AfpTool);
-  m_AfpTool.setName("AfpTool");
+  ANA_CHECK (m_afpTool.retrieve ());
+
+  ANA_MSG_INFO(m_afpTool->configInfo());
 
   return StatusCode::SUCCESS;
 }
@@ -41,7 +45,7 @@ StatusCode AfpAnalysisExample :: execute ()
 
   xAOD::TEvent* event = wk()->xaodEvent();
 
-  const xAOD::EventInfo* eventInfo = 0;
+  const xAOD::EventInfo* eventInfo = nullptr;
   ANA_CHECK(event->retrieve( eventInfo, "EventInfo") );
   ANA_MSG_INFO("");
   ANA_MSG_INFO("");
@@ -50,31 +54,31 @@ StatusCode AfpAnalysisExample :: execute ()
 
   // Hits
   ANA_MSG_INFO("===== HITS =====");
-  ANA_MSG_INFO("Event contains " << m_AfpTool->hits()->size() << " AFP Si hits");
+  ANA_MSG_INFO("Event contains " << m_afpTool->hits()->size() << " AFP Si hits");
 
   int nh[4][4] = {0};
   int nhs[4] = {0};
 
-  for(auto hit : *(m_AfpTool->hits())){
+  for(auto hit : *(m_afpTool->hits())){
     int s = hit->stationID();
     int l = hit->pixelLayerID();
     nh[s][l]++;
     nhs[s]++;
   }
 
-  for(int s=0; s<4; s++){
-    ANA_MSG_INFO("Event contains " << nhs[s] << " AFP Si hits in station " << s);
-    for(int l=0; l<4; l++)
-      ANA_MSG_INFO("Event contains " << nh[s][l] << " AFP Si hits in station " << s << " layer " << l);
+  for(int station=0; station<4; station++) {
+    ANA_MSG_INFO("Event contains " << nhs[station] << " AFP Si hits in station " << station);
+    for(int layer=0; layer<4; layer++)
+      ANA_MSG_INFO("Event contains " << nh[station][layer] << " AFP Si hits in station " << station << " layer " << layer);
   }
 
   // Clusters
   ANA_MSG_INFO("===== CLUSTERS =====");
-  ANA_MSG_INFO("Event contains " << m_AfpTool->clusters()->size() << " AFP Si clusters");
+  ANA_MSG_INFO("Event contains " << m_afpTool->clusters()->size() << " AFP Si clusters");
   
   int nc[4][4] = {0};
   int ncs[4] = {0};
-  for(auto c : *(m_AfpTool->clusters())){
+  for(auto c : *(m_afpTool->clusters())){
     ATH_MSG_INFO("\t" << c->xLocal()<< ", "<<c->yLocal()<<", "<<c->zLocal());
     int s = c->stationID();
     int l = c->pixelLayerID();
@@ -82,30 +86,30 @@ StatusCode AfpAnalysisExample :: execute ()
     ncs[s]++;
   }
 
-  for(int s=0; s<4; s++){
-    ANA_MSG_INFO("Event contains " << ncs[s] << " AFP Si clusters in station " << s);
-    for(int l=0; l<4; l++)
-      ANA_MSG_INFO("Event contains " << nc[s][l] << " AFP Si clusters in station " << s << " layer " << l);
+  for(int station=0; station<4; station++) {
+    ANA_MSG_INFO("Event contains " << ncs[station] << " AFP Si clusters in station " << station);
+    for(int layer=0; layer<4; layer++)
+      ANA_MSG_INFO("Event contains " << nc[station][layer] << " AFP Si clusters in station " << station << " layer " << layer);
   }
 
   // Tracks
   ANA_MSG_INFO("===== TRACKS =====");
-  ANA_MSG_INFO("Event contains " << m_AfpTool->tracks()->size() << " AFP tracks");
+  ANA_MSG_INFO("Event contains " << m_afpTool->tracks()->size() << " AFP tracks");
   
   int nt[4] = {0};
-  for(auto t : *(m_AfpTool->tracks())){
-    int s = t->stationID();
-    ATH_MSG_INFO("\t" << t->stationID()<<" "<<t->xLocal()<<" "<<t->yLocal());
+  for(auto trk : *(m_afpTool->tracks())){
+    int s = trk->stationID();
+    ATH_MSG_INFO("\t" << trk->stationID()<<" "<<trk->xLocal()<<" "<<trk->yLocal());
     nt[s]++;
   }
 
-  for(int s=0; s<4; s++)
-    ANA_MSG_INFO("Event contains " << nt[s] << " AFP tracks in station " << s);
+  for(int station=0; station<4; station++)
+    ANA_MSG_INFO("Event contains " << nt[station] << " AFP tracks in station " << station);
 
   
   ANA_MSG_INFO("===== STORE GATE TRACKS =====");
 
-  const xAOD::AFPTrackContainer* afpTracks = 0;
+  const xAOD::AFPTrackContainer* afpTracks = nullptr;
   ANA_CHECK(event->retrieve( afpTracks, "AFPTrackContainer") );
   for(auto t : *afpTracks)
     ATH_MSG_INFO("\t" << t->stationID()<<" "<<t->xLocal()<<" "<<t->yLocal());
@@ -113,9 +117,9 @@ StatusCode AfpAnalysisExample :: execute ()
   
   // Protons
   ANA_MSG_INFO("===== PROTONS =====");
-  ANA_MSG_INFO("Event contains " << m_AfpTool->protons()->size() << " AFP protons");
+  ANA_MSG_INFO("Event contains " << m_afpTool->protons()->size() << " AFP protons");
 
-  for(auto proton : *(m_AfpTool->protons())){
+  for(auto proton : *(m_afpTool->protons())){
     ATH_MSG_INFO("\t" << proton->px()<<", "<<proton->py()<<", "<<proton->pz()<<", "<<proton->e());
   }
 

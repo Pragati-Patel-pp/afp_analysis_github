@@ -33,7 +33,7 @@ runAfpAnalysisExample submitDir1
 ```
 You can also use Python steering macro:
 ```bash
-../source/runAfpAnalysisExample -s submitDir2
+../source/AfpAnalysis/jobOptions/runAfpAnalysisExample -s submitDir2
 ```
 
 
@@ -46,4 +46,4 @@ source */setup.sh
 ```
 A tutorial on xAOD analysis can be found in https://atlassoftwaredocs.web.cern.ch/ABtutorial
 
-In case of problems of questions do not hesitate to contact rafal.staszewski@ifj.edu.pl.
+In case of problems, questions or suggestions, please do not hesitate to send an e-mail to e-group [atlas-afp-analysis-software@cern.ch](mailto:atlas-afp-analysis-software@cern.ch).
