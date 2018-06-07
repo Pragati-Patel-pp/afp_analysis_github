@@ -120,7 +120,11 @@ StatusCode AfpAnalysisExample :: execute ()
   ANA_MSG_INFO("Event contains " << m_afpTool->protons()->size() << " AFP protons");
 
   for(auto proton : *(m_afpTool->protons())){
-    ATH_MSG_INFO("\t" << proton->px()<<", "<<proton->py()<<", "<<proton->pz()<<", "<<proton->e());
+    ATH_MSG_INFO("\t" << proton->px()<<", "<<proton->py()<<", "<<proton->pz()<<", "<<proton->e()<<", chi2: "<<proton->chi2());
+    for (unsigned int it = 0; it < proton->afpTrackLinks().size(); it++) {
+      auto track = *(proton->afpTrackLinks().at(it));
+      ATH_MSG_INFO("\t\t" << track->stationID()<<" "<<track->xLocal()<<" "<<track->yLocal());
+    }
   }
 
   return StatusCode::SUCCESS;
