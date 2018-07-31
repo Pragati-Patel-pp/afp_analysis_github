@@ -18,7 +18,7 @@ ROOT.SH.ScanDir().filePattern( '*' ).scan( sh, inputFilePath )
 
 job = ROOT.EL.Job()
 job.sampleHandler( sh )
-job.options().setDouble( ROOT.EL.Job.optMaxEvents, 2 )
+job.options().setDouble( ROOT.EL.Job.optMaxEvents, 10 )
 
 # configure algorithm
 from AnaAlgorithm.AnaAlgorithmConfig import AnaAlgorithmConfig
