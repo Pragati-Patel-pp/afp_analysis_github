@@ -42,29 +42,98 @@ int main( int argc, char* argv[] ) {
   config.setType ("AfpAnalysisExample");
   config.setName ("AfpAnalysisExampleAlg");
 
-  // // ===== OPTIONAL CONFIGURATION =====
-  // // --- create main analysis tool ---
-  // config.createPrivateTool ("afpTool","AFP::AfpAnalysisTool").ignore();
-  // config.setProperty("afpTool.hitsContainerName", "AFPSiHitContainer").ignore();
-  // config.setProperty("afpTool.clusterContainerName", "AFPSiHitsClusterContainer").ignore();
-  // config.setProperty("afpTool.tracksContainerName", "AFPTrackContainer").ignore();
-  // config.setProperty("afpTool.protonsContainerName", "my_proton_name").ignore();
+  // ===== OPTIONAL CONFIGURATION =====
+  // --- create main analysis tool ---
+  config.createPrivateTool ("afpTool","AFP::AfpAnalysisTool").ignore();
+  config.setProperty("afpTool.hitsContainerName", "AFPSiHitContainer").ignore();
+  config.setProperty("afpTool.clusterContainerName", "AFPSiHitsClusterContainer").ignore();
+  config.setProperty("afpTool.tracksContainerName", "AFPTrackContainer").ignore();
+  config.setProperty("afpTool.protonsContainerName", "AFPProtonContainer").ignore();
+  // config.setProperty("afpTool.numberOfAdditionalBc", 1).ignore(); // for run 348002
 
-  // // --- create and configure proton reconstruction tool ---
-  // config.createPrivateTool ("afpTool.clusterTool","AFP::ClusteringTool").ignore();
 
-  // // --- create and configure track finding tool ---
-  // config.createPrivateTool ("afpTool.trackFindTool","AFP::TrackFindSimpleClusteringTool").ignore();
-  // config.setProperty("afpTool.trackFindTool.allowedDistanceBetweenClustersInTrack", 42).ignore(); // set distance between tracks
 
-  // // --- create and configure track reconstruction tool ---
-  // config.createPrivateTool ("afpTool.trackRecoTool","AFP::TrackRecoLinRegTool").ignore();
+  // --- create and configure cluster reconstruction tool for each station ---
+  config.createPrivateTool ("afpTool.clusterToolSt0", "AFP::ClusteringTool").ignore();
+  config.createPrivateTool ("afpTool.clusterToolSt1", "AFP::ClusteringTool").ignore();
+  config.createPrivateTool ("afpTool.clusterToolSt2", "AFP::ClusteringTool").ignore();
+  config.createPrivateTool ("afpTool.clusterToolSt3", "AFP::ClusteringTool").ignore();
 
-  // // --- create and configure proton reconstruction tool ---
-  // config.createPrivateTool ("afpTool.protonRecoTool","AFP::ProtonRecoChi2Minuit").ignore();
-  // // config.createPrivateTool ("afpTool.protonRecoTool","AFP::ProtonRecoAnalytical").ignore();
-  // // config.setProperty("afpTool.protonRecoTool.parametrizationFileNameBeam1", "parameterization_beta_0.40_b1_2017.txt").ignore();
-  // // config.setProperty("afpTool.protonRecoTool.parametrizationFileNameBeam2", "parameterization_beta_0.40_b2_2017.txt").ignore();
+
+
+  // --- create and configure track finding tool for each station ---
+  config.createPrivateTool ("afpTool.trackFindToolSt0", "AFP::TrackFindSimpleClusteringTool").ignore();
+  config.createPrivateTool ("afpTool.trackFindToolSt1", "AFP::TrackFindSimpleClusteringTool").ignore();
+  config.createPrivateTool ("afpTool.trackFindToolSt2", "AFP::TrackFindSimpleClusteringTool").ignore();
+  config.createPrivateTool ("afpTool.trackFindToolSt3", "AFP::TrackFindSimpleClusteringTool").ignore();
+  config.setProperty("afpTool.trackFindToolSt0.allowedDistanceBetweenClustersInTrack", 1.0).ignore(); // set distance between tracks
+  config.setProperty("afpTool.trackFindToolSt1.allowedDistanceBetweenClustersInTrack", 1.0).ignore(); // set distance between tracks
+  config.setProperty("afpTool.trackFindToolSt2.allowedDistanceBetweenClustersInTrack", 0.8).ignore(); // set distance between tracks
+  config.setProperty("afpTool.trackFindToolSt3.allowedDistanceBetweenClustersInTrack", 0.8).ignore(); // set distance between tracks
+
+
+
+  // --- create and configure track reconstruction tool for each station ---
+  config.createPrivateTool ("afpTool.trackRecoToolSt0", "AFP::TrackRecoLinRegTool").ignore();
+  config.createPrivateTool ("afpTool.trackRecoToolSt1", "AFP::TrackRecoLinRegTool").ignore();
+  config.createPrivateTool ("afpTool.trackRecoToolSt2", "AFP::TrackRecoLinRegTool").ignore();
+  config.createPrivateTool ("afpTool.trackRecoToolSt3", "AFP::TrackRecoLinRegTool").ignore();
+
+
+
+  // --- create and configure proton reconstruction tool for each side ---
+  /// ProtonRecoAnalytical:
+  config.createPrivateTool ("afpTool.protonRecoToolSide0", "AFP::ProtonRecoAnalytical").ignore();
+  config.createPrivateTool ("afpTool.protonRecoToolSide1", "AFP::ProtonRecoAnalytical").ignore();
+
+  // Side A
+  config.afpTool.setProperty("protonRecoToolSide0.parametrizationFileName", "parameterization_beta_0.40_b2_2017.txt").ignore();
+
+  // Side C
+  config.afpTool.setProperty("protonRecoToolSide1.parametrizationFileName", "parameterization_beta_0.40_b1_2017.txt").ignore();
+
+
+  // /// ProtonRecoChi2Minuit:
+  // config.createPrivateTool ("afpTool.protonRecoToolSide0", "AFP::ProtonRecoChi2Minuit").ignore();
+  // config.createPrivateTool ("afpTool.protonRecoToolSide1", "AFP::ProtonRecoChi2Minuit").ignore();
+  //
+  // // Side A
+  // config.createPrivateTool ("afpTool.protonRecoToolSide0.transportToolAFP", "AFP::TransportParametrization").ignore();
+  // config.setProperty("afpTool.protonRecoToolSide0.transportToolAFP.parametrizationFileNameBeam1", "parameterization_beta_0.40_b1_2017.txt").ignore();
+  // config.setProperty("afpTool.protonRecoToolSide0.transportToolAFP.parametrizationFileNameBeam2", "parameterization_beta_0.40_b2_2017.txt").ignore();
+  //
+  // // Side C
+  // config.createPrivateTool ("afpTool.protonRecoToolSide1.transportToolAFP", "AFP::TransportParametrization").ignore();
+  // config.setProperty("afpTool.protonRecoToolSide1.transportToolAFP.parametrizationFileNameBeam1", "parameterization_beta_0.40_b1_2017.txt").ignore();
+  // config.setProperty("afpTool.protonRecoToolSide1.transportToolAFP.parametrizationFileNameBeam2", "parameterization_beta_0.40_b2_2017.txt").ignore();
+
+
+  // /// ProtonRecoWithALFA:
+  // config.createPrivateTool ("afpTool.protonRecoToolSide0", "AFP::ProtonRecoWithALFA").ignore();
+  // config.createPrivateTool ("afpTool.protonRecoToolSide1", "AFP::ProtonRecoWithALFA").ignore();
+  //
+  // // Side A
+  // config.createPrivateTool ("afpTool.protonRecoToolSide0.transportToolAFP", "AFP::TransportParametrization").ignore();
+  // config.setProperty("afpTool.protonRecoToolSide0.transportToolAFP.parametrizationFileNameBeam1", "param_run348002_AFP_b1.txt").ignore();
+  // config.setProperty("afpTool.protonRecoToolSide0.transportToolAFP.parametrizationFileNameBeam2", "param_run348002_AFP_b2.txt").ignore();
+  //
+  // config.createPrivateTool ("afpTool.protonRecoToolSide0.transportToolALFA", "AFP::TransportParametrization").ignore();
+  // config.setProperty("afpTool.protonRecoToolSide0.transportToolALFA.parametrizationFileNameBeam1", "param_run348002_ALFA_b1.txt").ignore();
+  // config.setProperty("afpTool.protonRecoToolSide0.transportToolALFA.parametrizationFileNameBeam2", "param_run348002_ALFA_b2.txt").ignore();
+  // config.setProperty("afpTool.protonRecoToolSide0.transportToolALFA.nearStationPosition", 237.398).ignore();
+  // config.setProperty("afpTool.protonRecoToolSide0.transportToolALFA.farStationPosition", 245.657).ignore();
+  //
+  // // Side C
+  // config.createPrivateTool ("afpTool.protonRecoToolSide1.transportToolAFP", "AFP::TransportParametrization").ignore();
+  // config.setProperty("afpTool.protonRecoToolSide1.transportToolAFP.parametrizationFileNameBeam1", "param_run348002_AFP_b1.txt").ignore();
+  // config.setProperty("afpTool.protonRecoToolSide1.transportToolAFP.parametrizationFileNameBeam2", "param_run348002_AFP_b2.txt").ignore();
+  //
+  // config.createPrivateTool ("afpTool.protonRecoToolSide1.transportToolALFA", "AFP::TransportParametrization").ignore();
+  // config.setProperty("afpTool.protonRecoToolSide1.transportToolALFA.parametrizationFileNameBeam1", "param_run348002_ALFA_b1.txt").ignore();
+  // config.setProperty("afpTool.protonRecoToolSide1.transportToolALFA.parametrizationFileNameBeam2", "param_run348002_ALFA_b2.txt").ignore();
+  // config.setProperty("afpTool.protonRecoToolSide1.transportToolALFA.nearStationPosition", 237.398).ignore();
+  // config.setProperty("afpTool.protonRecoToolSide1.transportToolALFA.farStationPosition", 245.656).ignore();
+
 
   // // &&&&& END OPTIONAL CONFIGURATION &&&&&
 
