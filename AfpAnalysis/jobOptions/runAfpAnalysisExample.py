@@ -69,10 +69,10 @@ config.addPrivateTool ("afpTool.protonRecoToolSide0", "AFP::ProtonRecoAnalytical
 config.addPrivateTool ("afpTool.protonRecoToolSide1", "AFP::ProtonRecoAnalytical")
 
 # Side A
-afpTool.protonRecoToolSide0.parametrizationFileName = "parameterization_beta_0.40_b2_2017.txt"
+config.afpTool.protonRecoToolSide0.parametrizationFileName = "parameterization_beta_0.40_b2_2017.txt"
 
 # Side C
-afpTool.protonRecoToolSide1.parametrizationFileName = "parameterization_beta_0.40_b1_2017.txt"
+config.afpTool.protonRecoToolSide1.parametrizationFileName = "parameterization_beta_0.40_b1_2017.txt"
 
 
 # ### ProtonRecoChi2Minuit:

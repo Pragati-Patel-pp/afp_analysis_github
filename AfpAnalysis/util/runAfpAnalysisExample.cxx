@@ -87,10 +87,10 @@ int main( int argc, char* argv[] ) {
   config.createPrivateTool ("afpTool.protonRecoToolSide1", "AFP::ProtonRecoAnalytical").ignore();
 
   // Side A
-  config.afpTool.setProperty("protonRecoToolSide0.parametrizationFileName", "parameterization_beta_0.40_b2_2017.txt").ignore();
+  config.setProperty("afpTool.protonRecoToolSide0.parametrizationFileName", "parameterization_beta_0.40_b2_2017.txt").ignore();
 
   // Side C
-  config.afpTool.setProperty("protonRecoToolSide1.parametrizationFileName", "parameterization_beta_0.40_b1_2017.txt").ignore();
+  config.setProperty("afpTool.protonRecoToolSide1.parametrizationFileName", "parameterization_beta_0.40_b1_2017.txt").ignore();
 
 
   // /// ProtonRecoChi2Minuit:
