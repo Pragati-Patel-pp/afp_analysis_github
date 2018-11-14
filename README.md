@@ -33,7 +33,7 @@ runAfpAnalysisExample submitDir1
 ```
 You can also use Python steering macro:
 ```bash
-../source/AfpAnalysis/jobOptions/runAfpAnalysisExample -s submitDir2
+runAfpAnalysisExample.py -s submitDir2
 ```
 
 
