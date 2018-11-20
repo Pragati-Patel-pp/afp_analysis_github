@@ -8,7 +8,7 @@ git clone --recursive https://:@gitlab.cern.ch:8443/afp/AfpAnalysisToolbox_examp
 mkdir build run
 cd build
 setupATLAS
-asetup 21.2,AnalysisBase,latest
+asetup 21.2.52,AnalysisBase
 cmake ../source/
 make
 source */setup.sh
@@ -33,7 +33,7 @@ runAfpAnalysisExample submitDir1
 ```
 You can also use Python steering macro:
 ```bash
-../source/AfpAnalysis/jobOptions/runAfpAnalysisExample -s submitDir2
+runAfpAnalysisExample.py -s submitDir2
 ```
 
 

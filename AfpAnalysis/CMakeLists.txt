@@ -26,4 +26,4 @@ if (NOT XAOD_STANDALONE)
     LINK_LIBRARIES AfpAnalysisLib)
 endif ()
 
-#atlas_install_joboptions( share/*.py )
+atlas_install_scripts( jobOptions/*.py )
