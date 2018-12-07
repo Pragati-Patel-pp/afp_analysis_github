@@ -7,8 +7,6 @@
 #include <xAODRootAccess/TEvent.h>
 #include <AsgTools/MessageCheck.h> // ASG status code check
 #include <xAODEventInfo/EventInfo.h>
-#include <xAODForward/AFPDataContainer.h>
-#include <xAODForward/AFPData.h>
 #include <xAODForward/AFPSiHitContainer.h>
 #include <xAODForward/AFPSiHit.h>
 
@@ -52,44 +50,47 @@ StatusCode AfpAnalysisExample :: execute ()
   ANA_MSG_INFO("New event: " << eventInfo->eventNumber());
   ANA_MSG_INFO("run: " << eventInfo->runNumber() << " lumi block: " << eventInfo->lumiBlock());
 
-  // Hits
-  ANA_MSG_INFO("===== HITS =====");
-  ANA_MSG_INFO("Event contains " << m_afpTool->hits()->size() << " AFP Si hits");
+  // MC does not contain hits nor clusters, we omit them
+  if (!eventInfo->eventType(xAOD::EventInfo::IS_SIMULATION)) {
+    // Hits
+    ANA_MSG_INFO("===== HITS =====");
+    ANA_MSG_INFO("Event contains " << m_afpTool->hits()->size() << " AFP Si hits");
 
-  int nh[4][4] = {0};
-  int nhs[4] = {0};
+    int nh[4][4] = {0};
+    int nhs[4] = {0};
 
-  for(auto hit : *(m_afpTool->hits())){
-    int s = hit->stationID();
-    int l = hit->pixelLayerID();
-    nh[s][l]++;
-    nhs[s]++;
-  }
+    for(auto hit : *(m_afpTool->hits())){
+      int s = hit->stationID();
+      int l = hit->pixelLayerID();
+      nh[s][l]++;
+      nhs[s]++;
+    }
 
-  for(int station=0; station<4; station++) {
-    ANA_MSG_INFO("Event contains " << nhs[station] << " AFP Si hits in station " << station);
-    for(int layer=0; layer<4; layer++)
-      ANA_MSG_INFO("Event contains " << nh[station][layer] << " AFP Si hits in station " << station << " layer " << layer);
-  }
+    for(int station=0; station<4; station++) {
+      ANA_MSG_INFO("Event contains " << nhs[station] << " AFP Si hits in station " << station);
+      for(int layer=0; layer<4; layer++)
+        ANA_MSG_INFO("Event contains " << nh[station][layer] << " AFP Si hits in station " << station << " layer " << layer);
+    }
 
-  // Clusters
-  ANA_MSG_INFO("===== CLUSTERS =====");
-  ANA_MSG_INFO("Event contains " << m_afpTool->clusters()->size() << " AFP Si clusters");
-  
-  int nc[4][4] = {0};
-  int ncs[4] = {0};
-  for(auto c : *(m_afpTool->clusters())){
-    ATH_MSG_INFO("\t" << c->xLocal()<< ", "<<c->yLocal()<<", "<<c->zLocal());
-    int s = c->stationID();
-    int l = c->pixelLayerID();
-    nc[s][l]++;
-    ncs[s]++;
-  }
+    // Clusters
+    ANA_MSG_INFO("===== CLUSTERS =====");
+    ANA_MSG_INFO("Event contains " << m_afpTool->clusters()->size() << " AFP Si clusters");
+    
+    int nc[4][4] = {0};
+    int ncs[4] = {0};
+    for(auto c : *(m_afpTool->clusters())){
+      ATH_MSG_INFO("\t" << c->xLocal()<< ", "<<c->yLocal()<<", "<<c->zLocal());
+      int s = c->stationID();
+      int l = c->pixelLayerID();
+      nc[s][l]++;
+      ncs[s]++;
+    }
 
-  for(int station=0; station<4; station++) {
-    ANA_MSG_INFO("Event contains " << ncs[station] << " AFP Si clusters in station " << station);
-    for(int layer=0; layer<4; layer++)
-      ANA_MSG_INFO("Event contains " << nc[station][layer] << " AFP Si clusters in station " << station << " layer " << layer);
+    for(int station=0; station<4; station++) {
+      ANA_MSG_INFO("Event contains " << ncs[station] << " AFP Si clusters in station " << station);
+      for(int layer=0; layer<4; layer++)
+        ANA_MSG_INFO("Event contains " << nc[station][layer] << " AFP Si clusters in station " << station << " layer " << layer);
+    }
   }
 
   // Tracks
