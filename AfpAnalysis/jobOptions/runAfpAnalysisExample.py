@@ -41,11 +41,11 @@ config.addPrivateTool ("afpTool.protonRecoToolSide1", "AFP::ProtonRecoAnalytical
 
 # Side A
 # config.afpTool.protonRecoToolSide0.parametrizationFileName = "parameterization_beta_0.40_b2_2017.txt"
-config.afpTool.protonRecoToolSide0.allowSingleStationReco = True
+# config.afpTool.protonRecoToolSide0.allowSingleStationReco = True
 
 # Side C
 # config.afpTool.protonRecoToolSide1.parametrizationFileName = "parameterization_beta_0.40_b1_2017.txt"
-config.afpTool.protonRecoToolSide1.allowSingleStationReco = True
+# config.afpTool.protonRecoToolSide1.allowSingleStationReco = True
 
 # &&&&& END OPTIONAL CONFIGURATION &&&&&
 
