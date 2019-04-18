@@ -18,6 +18,10 @@ class AfpAnalysisExample : public EL::AnaAlgorithm
 
   private:
 
+    /// List of systematics (optional)
+    // std::vector<CP::SystematicSet> m_systematicsList;
+
+    /// AfpAnalysisToolbox handle
     asg::AnaToolHandle<AFP::IAfpAnalysisTool> m_afpTool; //!
 
 };

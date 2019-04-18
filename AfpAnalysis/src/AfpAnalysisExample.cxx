@@ -11,9 +11,10 @@
 #include <xAODForward/AFPSiHit.h>
 
 #include <AfpAnalysisTools/AfpAnalysisTool.h>
+#include <PATInterfaces/SystematicsUtil.h>
 
 #include <utility> 
-#include<iostream>
+#include <iostream>
 
 
 AfpAnalysisExample :: AfpAnalysisExample (const std::string& name, ISvcLocator* pSvcLocator) : 
@@ -32,6 +33,20 @@ StatusCode AfpAnalysisExample :: initialize ()
 
   ANA_MSG_INFO(m_afpTool->configInfo());
 
+  // Systematics for AFP (optional)
+  /* {
+    CP::SystematicSet recommendedSystematics;
+
+    // Add recommended systematics for AFP
+    recommendedSystematics.insert(m_afpTool->recommendedSystematics());
+
+    m_systematicsList = CP::make_systematics_vector(recommendedSystematics);
+
+    std::cout << "List of avaliable systematics:\n";
+    for (auto& systematic : m_systematicsList)
+      std::cout << systematic.name() << '\n';
+  } */
+
   return StatusCode::SUCCESS;
 }
 
@@ -49,6 +64,23 @@ StatusCode AfpAnalysisExample :: execute ()
   ANA_MSG_INFO("");
   ANA_MSG_INFO("New event: " << eventInfo->eventNumber());
   ANA_MSG_INFO("run: " << eventInfo->runNumber() << " lumi block: " << eventInfo->lumiBlock());
+
+  // Systematics for AFP (optional)
+  /* {
+    // Define systematic by name
+    std::string affectingSystematics = "CLUST_NEIGHBOUR";
+
+    // Find systematic in systematics list
+    auto systematic = std::find_if(m_systematicsList.begin(), m_systematicsList.end(),
+        [&affectingSystematics](auto& sys) { return sys.name() == affectingSystematics; });
+
+    // Apply systematic to afpTool
+    if (systematic != m_systematicsList.end()) {
+      m_afpTool->applySystematicVariation(*systematic);
+
+      ANA_MSG_INFO("Systematic: " << (*systematic).name());
+    }
+  } */
 
   // MC does not contain hits nor clusters, we omit them
   if (!eventInfo->eventType(xAOD::EventInfo::IS_SIMULATION)) {
@@ -127,6 +159,12 @@ StatusCode AfpAnalysisExample :: execute ()
       ATH_MSG_INFO("\t\t" << track->stationID()<<" "<<track->xLocal()<<" "<<track->yLocal());
     }
   }
+
+  // Systematics for AFP (optional)
+  /* {
+    // Reset afpTool to default state
+    m_afpTool->reset();
+  } */
 
   return StatusCode::SUCCESS;
 }
