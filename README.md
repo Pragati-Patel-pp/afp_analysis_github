@@ -8,7 +8,7 @@ git clone --recursive https://:@gitlab.cern.ch:8443/afp/AfpAnalysisToolbox_examp
 mkdir build run
 cd build
 setupATLAS
-asetup 21.2.62,AnalysisBase
+asetup 21.2.70,AnalysisBase
 cmake ../source/
 make
 source */setup.sh
