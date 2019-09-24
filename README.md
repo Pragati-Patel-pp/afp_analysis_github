@@ -46,12 +46,12 @@ source */setup.sh
 ```
 A tutorial on xAOD analysis can be found in https://atlassoftwaredocs.web.cern.ch/ABtutorial
 
-To update AfpAnalysisToolbox:
+To update AfpAnalysisToolbox to newest version:
 ```bash
 cd MyAfpAnalysis/source/AfpAnalysisToolbox
 git stash # save local changes if any
 git pull origin master
 ```
-then recompile code from `build` directory
+then recompile code from `build` directory.
 
 In case of problems, questions or suggestions, please do not hesitate to send an e-mail to e-group [atlas-afp-analysis-software@cern.ch](mailto:atlas-afp-analysis-software@cern.ch).
