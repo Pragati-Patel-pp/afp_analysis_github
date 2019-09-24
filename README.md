@@ -8,7 +8,7 @@ git clone --recursive https://:@gitlab.cern.ch:8443/afp/AfpAnalysisToolbox_examp
 mkdir build run
 cd build
 setupATLAS
-asetup 21.2.70,AnalysisBase
+asetup 21.2.91,AnalysisBase
 cmake ../source/
 make
 source */setup.sh
@@ -45,5 +45,13 @@ asetup --restore
 source */setup.sh
 ```
 A tutorial on xAOD analysis can be found in https://atlassoftwaredocs.web.cern.ch/ABtutorial
+
+To update AfpAnalysisToolbox:
+```bash
+cd MyAfpAnalysis/source/AfpAnalysisToolbox
+git stash # save local changes if any
+git pull origin master
+```
+then recompile code from `build` directory
 
 In case of problems, questions or suggestions, please do not hesitate to send an e-mail to e-group [atlas-afp-analysis-software@cern.ch](mailto:atlas-afp-analysis-software@cern.ch).
