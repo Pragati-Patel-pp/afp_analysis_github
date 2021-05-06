@@ -1,4 +1,6 @@
-cmake_minimum_required( VERSION 3.4 FATAL_ERROR )
+cmake_minimum_required( VERSION 3.7 FATAL_ERROR )
+
+project(AfpAnalysisToolbox_example VERSION 1.0.0)
 
 set( _parentProjectNames Athena AthenaP1 AnalysisBase AthAnalysis
    AthSimulation AthDerivation AnalysisTop )

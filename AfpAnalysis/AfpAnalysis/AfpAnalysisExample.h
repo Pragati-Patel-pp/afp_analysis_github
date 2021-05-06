@@ -1,9 +1,16 @@
 #pragma once
 
-#include "AsgTools/AnaToolHandle.h"
+#include "AfpAnalysisTools/IAfpAnalysisTool.h"
 
-#include <AnaAlgorithm/AnaAlgorithm.h>
-#include <AfpAnalysisTools/IAfpAnalysisTool.h>
+#ifdef XAOD_STANDALONE
+  #include "EventLoop/Job.h"
+  #include "EventLoop/StatusCode.h"
+  #include "EventLoop/Worker.h"
+#endif  
+
+#include "AsgTools/AnaToolHandle.h"
+#include "AsgTools/MessageCheckAsgTools.h" // ASG status code check
+#include "AnaAlgorithm/AnaAlgorithm.h"
 
 class AfpAnalysisExample : public EL::AnaAlgorithm
 {
