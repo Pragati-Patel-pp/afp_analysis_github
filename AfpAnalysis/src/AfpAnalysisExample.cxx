@@ -1,11 +1,8 @@
-#include <EventLoop/Job.h>
-#include <EventLoop/StatusCode.h>
-#include <EventLoop/Worker.h>
+
 #include <AfpAnalysis/AfpAnalysisExample.h>
 
 #include <xAODRootAccess/Init.h>
 #include <xAODRootAccess/TEvent.h>
-#include <AsgTools/MessageCheck.h> // ASG status code check
 #include <xAODEventInfo/EventInfo.h>
 #include <xAODForward/AFPSiHitContainer.h>
 #include <xAODForward/AFPSiHit.h>
@@ -47,6 +44,18 @@ StatusCode AfpAnalysisExample :: initialize ()
       std::cout << systematic.name() << '\n';
   } */
 
+#ifdef XAOD_STANDALONE
+  ANA_MSG_DEBUG(" this is AfpAnalysisExample initialize with XAOD_STANDALONE (i.e. with AnalysisBase)");
+#else
+  ANA_MSG_DEBUG(" this is AfpAnalysisExample initialize without XAOD_STANDALONE (i.e. with AthAnalysis)");
+#endif
+
+#ifdef XAOD_ANALYSIS
+  ANA_MSG_DEBUG(" this is AfpAnalysisExample initialize with XAOD_ANALYSIS");
+#else
+  ANA_MSG_DEBUG(" this is AfpAnalysisExample initialize without XAOD_ANALYSIS");
+#endif
+
   return StatusCode::SUCCESS;
 }
 
@@ -55,10 +64,14 @@ StatusCode AfpAnalysisExample :: initialize ()
 StatusCode AfpAnalysisExample :: execute ()
 {
   ANA_CHECK_SET_TYPE (StatusCode); // set type of return code you are expecting (add to top of each function once)
-
-  xAOD::TEvent* event = wk()->xaodEvent();
-
   const xAOD::EventInfo* eventInfo = nullptr;
+
+#ifdef XAOD_STANDALONE
+  xAOD::TEvent* event = wk()->xaodEvent();
+#else
+  auto event = evtStore();
+#endif
+  
   ANA_CHECK(event->retrieve( eventInfo, "EventInfo") );
   ANA_MSG_INFO("");
   ANA_MSG_INFO("");
@@ -128,7 +141,7 @@ StatusCode AfpAnalysisExample :: execute ()
   // Tracks
   ANA_MSG_INFO("===== TRACKS =====");
   ANA_MSG_INFO("Event contains " << m_afpTool->tracks()->size() << " AFP tracks");
-  
+
   int nt[4] = {0};
   for(auto trk : *(m_afpTool->tracks())){
     int s = trk->stationID();
