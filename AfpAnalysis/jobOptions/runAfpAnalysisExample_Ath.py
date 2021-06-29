@@ -1,4 +1,3 @@
-
 # it's important to have "POOLAccess" here. With "AthenaAccess" or others, the EventContext won't be filled properly
 jps.AthenaCommonFlags.AccessMode = "POOLAccess" 
 
@@ -21,12 +20,12 @@ conddb.iovdbsvc.DBInstance=""
 
 
 schema = "<db>sqlite://;schema=Example.db;dbname=CONDBR2</db>"
-locFolder = "/FWD/AFP/LocalAlignment"
-locTag="<tag>AFPAlignLoc-00</tag>"
+locFolder = "/FWD/Onl/AFP/Align/Local"
+locTag="<tag>AFPAlignLoc-01</tag>"
 conddb.addFolder("", schema+locFolder+locTag, className='CondAttrListCollection')
 
-globFolder = "/FWD/AFP/GlobalAlignment"
-globTag="<tag>AFPAlignGlob-00</tag>"
+globFolder = "/FWD/Onl/AFP/Align/Global"
+globTag="<tag>AFPAlignGlob-01</tag>"
 conddb.addFolder("", schema+globFolder+globTag, className='CondAttrListCollection')
 
 
