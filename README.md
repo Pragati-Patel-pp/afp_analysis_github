@@ -13,7 +13,7 @@ cmake ../source/
 make
 source */setup.sh
 cd ../run
-runAfpAnalysisExample
+runAfpAnalysisExample.py
 ```
 
 The analysis code is located in `source/AfpAnalysis/`. If you modify it and want to recompile you need to go to the `build` directory
@@ -26,16 +26,11 @@ cmake ../source
 make
 ```
 
-You should run the code from `run`. Remember to either remove `submitDir` created in a previous execution or to specify a new directory
+You should run the code from `run` directory. Remember to either remove `submitDir` created in a previous execution or to specify a new directory
 ```bash
 cd ../run
-runAfpAnalysisExample submitDir1
+runAfpAnalysisExample.py -s submitDir1
 ```
-You can also use Python steering macro:
-```bash
-runAfpAnalysisExample.py -s submitDir2
-```
-
 
 Every time you log in you need to do:
 ```bash
