@@ -18,8 +18,8 @@
 AfpAnalysisExample ::AfpAnalysisExample(const std::string &name, ISvcLocator *pSvcLocator) : EL::AnaAlgorithm(name, pSvcLocator),
                                                                                              m_afpTool("AFP::AfpAnalysisTool/afpTool", this),
                                                                                              m_trigConfigTool("TrigConf::xAODConfigTool/xAODConfigTool"),
-                                                                                             m_trigDecisionTool("Trig::TrigDecisionTool/TrigDecisionTool"),
-                                                                                             jet_file("/eos/user/p/prpatel/afp_analysis/run/out_aod.txt")
+                                                                                             m_trigDecisionTool("Trig::TrigDecisionTool/TrigDecisionTool")
+                                                                                             //jet_file("/eos/user/p/prpatel/afp_analysis/run/out_aod.txt")
                                                                                              //current_pos(0)
                                                                                              // aod_event_file("/eos/user/p/prpatel/afp_analysis/run/aod_event.txt")
 {
