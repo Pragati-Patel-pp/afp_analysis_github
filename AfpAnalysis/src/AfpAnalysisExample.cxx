@@ -6,195 +6,212 @@
 #include <xAODEventInfo/EventInfo.h>
 #include <xAODForward/AFPSiHitContainer.h>
 #include <xAODForward/AFPSiHit.h>
-
+#include <xAODJet/JetContainer.h>
 #include <AfpAnalysisTools/AfpAnalysisTool.h>
 #include <PATInterfaces/SystematicsUtil.h>
-
-#include <utility> 
+#include <TH1.h>
+#include <utility>
 #include <iostream>
+#include <cmath>
+#include <fstream>
 
-
-AfpAnalysisExample :: AfpAnalysisExample (const std::string& name, ISvcLocator* pSvcLocator) : 
-  EL::AnaAlgorithm (name, pSvcLocator),
-  m_afpTool("AFP::AfpAnalysisTool/afpTool", this)
+AfpAnalysisExample ::AfpAnalysisExample(const std::string &name, ISvcLocator *pSvcLocator) : EL::AnaAlgorithm(name, pSvcLocator),
+                                                                                             m_afpTool("AFP::AfpAnalysisTool/afpTool", this),
+                                                                                             m_trigConfigTool("TrigConf::xAODConfigTool/xAODConfigTool"),
+                                                                                             m_trigDecisionTool("Trig::TrigDecisionTool/TrigDecisionTool"),
+                                                                                             jet_file("/eos/user/p/prpatel/afp_analysis/run/out_aod.txt")
+                                                                                             //current_pos(0)
+                                                                                             // aod_event_file("/eos/user/p/prpatel/afp_analysis/run/aod_event.txt")
 {
   m_afpTool.declarePropertyFor(this, "afpTool", "Tool providing AFP information");
-  m_afpTool.setTypeAndName ("AFP::AfpAnalysisTool/afpTool");
+  m_afpTool.setTypeAndName("AFP::AfpAnalysisTool/afpTool");
+  declareProperty("Trigger", m_Trigger = "HLT_j20_L1AFP_A_OR_C", "Trigger");
 }
 
-
-
-StatusCode AfpAnalysisExample :: initialize ()
+StatusCode AfpAnalysisExample ::initialize()
 {
-  ANA_CHECK (m_afpTool.retrieve ());
+  ANA_CHECK(m_afpTool.retrieve());
 
   ANA_MSG_INFO(m_afpTool->configInfo());
 
-  // Systematics for AFP (optional)
-  /* {
-    CP::SystematicSet recommendedSystematics;
+  // Initialize the TrigDecisionTool
+  ANA_CHECK(m_trigConfigTool.initialize());
+  ANA_CHECK(m_trigDecisionTool.setProperty("ConfigTool", m_trigConfigTool.getHandle()));
+  ANA_CHECK(m_trigDecisionTool.setProperty("TrigDecisionKey", "xTrigDecision"));
+  ANA_CHECK(m_trigDecisionTool.initialize());
+  // ANA_CHECK(m_triggerMenuMetaDataTool.initialize());
 
-    // Add recommended systematics for AFP
-    recommendedSystematics.insert(m_afpTool->recommendedSystematics());
 
-    m_systematicsList = CP::make_systematics_vector(recommendedSystematics);
 
-    std::cout << "List of avaliable systematics:\n";
-    for (auto& systematic : m_systematicsList)
-      std::cout << systematic.name() << '\n';
-  } */
+  ANA_CHECK(book(TH2F("xi_vs_x_pos_A_loose", "xi vs x_pos_A_loose", 100, -20, 0, 100, 0, 1)));
+  ANA_CHECK(book(TH2F("xi_vs_x_pos_C_loose", "xi vs x_pos_C_loose", 100, -20, 0, 100, 0, 1)));
+  ANA_CHECK(book(TH2F("xi_vs_x_pos_A_tight", "xi vs x_pos_A_tight", 100, -20, 0, 100, 0, 1)));
+  ANA_CHECK(book(TH2F("xi_vs_x_pos_C_tight", "xi vs x_pos_C_tight", 100, -20, 0, 100, 0, 1)));
 
-#ifdef XAOD_STANDALONE
-  ANA_MSG_DEBUG(" this is AfpAnalysisExample initialize with XAOD_STANDALONE (i.e. with AnalysisBase)");
-#else
-  ANA_MSG_DEBUG(" this is AfpAnalysisExample initialize without XAOD_STANDALONE (i.e. with AthAnalysis)");
-#endif
+  ANA_CHECK(book(TH1F("cluster_multiplicity", "cluster_multiplicity", 20,-0.5,19.5)));
 
-#ifdef XAOD_ANALYSIS
-  ANA_MSG_DEBUG(" this is AfpAnalysisExample initialize with XAOD_ANALYSIS");
-#else
-  ANA_MSG_DEBUG(" this is AfpAnalysisExample initialize without XAOD_ANALYSIS");
-#endif
 
+  xAOD::TEvent *event = wk()->xaodEvent();
+  TFile *file = wk()->getOutputFile("skim");
+  ANA_CHECK(event->writeTo(file));
+
+  //check if the file is open
+  if (jet_file.is_open())
+  {
+    std::cout << "File is open" << std::endl;
+  }
+  else
+  {
+    std::cout << "File is not open" << std::endl;
+  }
+
+  
   return StatusCode::SUCCESS;
 }
 
-
-
-StatusCode AfpAnalysisExample :: execute ()
+StatusCode AfpAnalysisExample ::execute()
 {
-  ANA_CHECK_SET_TYPE (StatusCode); // set type of return code you are expecting (add to top of each function once)
-  const xAOD::EventInfo* eventInfo = nullptr;
+  xAOD::TEvent *event = wk()->xaodEvent();
 
-#ifdef XAOD_STANDALONE
-  xAOD::TEvent* event = wk()->xaodEvent();
-#else
-  auto event = evtStore();
-#endif
-  
-  ANA_CHECK(event->retrieve( eventInfo, "EventInfo") );
-  ANA_MSG_INFO("");
-  ANA_MSG_INFO("");
-  ANA_MSG_INFO("New event: " << eventInfo->eventNumber());
-  ANA_MSG_INFO("run: " << eventInfo->runNumber() << " lumi block: " << eventInfo->lumiBlock());
+  // const xAOD::JetContainer* AntiKt4EMPFlowJets = 0;
+  // ANA_CHECK(event->retrieve( AntiKt4EMPFlowJets, "AntiKt4EMPFlowJets" ) );
 
-  // Systematics for AFP (optional)
-  /* {
-    // Define systematic by name
-    std::string affectingSystematics = "CLUST_NEIGHBOUR";
+  const xAOD::EventInfo *eventInfo = 0;
+  ANA_CHECK(event->retrieve(eventInfo, "EventInfo"));
 
-    // Find systematic in systematics list
-    auto systematic = std::find_if(m_systematicsList.begin(), m_systematicsList.end(),
-        [&affectingSystematics](auto& sys) { return sys.name() == affectingSystematics; });
+  long event_number = eventInfo->eventNumber();
+ 
+    std::string line;
+    jet_file.seekg(current_pos);
 
-    // Apply systematic to afpTool
-    if (systematic != m_systematicsList.end()) {
-      m_afpTool->applySystematicVariation(*systematic);
-
-      ANA_MSG_INFO("Systematic: " << (*systematic).name());
-    }
-  } */
-
-  // MC does not contain hits nor clusters, we omit them
-  if (!eventInfo->eventType(xAOD::EventInfo::IS_SIMULATION)) {
-    // Hits
-    ANA_MSG_INFO("===== HITS =====");
-    ANA_MSG_INFO("Event contains " << m_afpTool->hits()->size() << " AFP Si hits");
-
-    int nh[4][4] = {0};
-    int nhs[4] = {0};
-
-    for(auto hit : *(m_afpTool->hits())){
-      int s = hit->stationID();
-      int l = hit->pixelLayerID();
-      nh[s][l]++;
-      nhs[s]++;
-    }
-
-    for(int station=0; station<4; station++) {
-      ANA_MSG_INFO("Event contains " << nhs[station] << " AFP Si hits in station " << station);
-      for(int layer=0; layer<4; layer++)
-        ANA_MSG_INFO("Event contains " << nh[station][layer] << " AFP Si hits in station " << station << " layer " << layer);
-    }
-
-    // Clusters
-    ANA_MSG_INFO("===== CLUSTERS =====");
-    ANA_MSG_INFO("Event contains " << m_afpTool->clusters()->size() << " AFP Si clusters");
+    //read only current line
+    std::getline(jet_file, line);
+    std::istringstream iss(line);
     
-    int nc[4][4] = {0};
-    int ncs[4] = {0};
-    for(auto c : *(m_afpTool->clusters())){
-      ATH_MSG_INFO("\t" << c->xLocal()<< ", "<<c->yLocal()<<", "<<c->zLocal());
-      int s = c->stationID();
-      int l = c->pixelLayerID();
-      nc[s][l]++;
-      ncs[s]++;
-    }
-
-    for(int station=0; station<4; station++) {
-      ANA_MSG_INFO("Event contains " << ncs[station] << " AFP Si clusters in station " << station);
-      for(int layer=0; layer<4; layer++)
-        ANA_MSG_INFO("Event contains " << nc[station][layer] << " AFP Si clusters in station " << station << " layer " << layer);
-    }
-  }
-
-  // Tracks
-  ANA_MSG_INFO("===== TRACKS =====");
-  ANA_MSG_INFO("Event contains " << m_afpTool->tracks()->size() << " AFP tracks");
-
-  int nt[4] = {0};
-  for(auto trk : *(m_afpTool->tracks())){
-    int s = trk->stationID();
-    ATH_MSG_INFO("\t" << trk->stationID()<<" "<<trk->xLocal()<<" "<<trk->yLocal());
-    nt[s]++;
-  }
-
-  for(int station=0; station<4; station++)
-    ANA_MSG_INFO("Event contains " << nt[station] << " AFP tracks in station " << station);
+    int event_number_jet;
+    float leading_jet_px, leading_jet_py, leading_jet_pz, leading_jet_e, subleading_jet_px, subleading_jet_py, subleading_jet_pz, subleading_jet_e;
+    iss >> event_number_jet >> leading_jet_px >> leading_jet_py >> leading_jet_pz >> leading_jet_e >> subleading_jet_px >> subleading_jet_py >> subleading_jet_pz >> subleading_jet_e;
+     
 
   
-  ANA_MSG_INFO("===== STORE GATE TRACKS =====");
+    int clusters_id =0;
+    std::map<int, float> myMap;
 
-  const xAOD::AFPTrackContainer* afpTracks = nullptr;
-  ANA_CHECK(event->retrieve( afpTracks, "AFPTrackContainer") );
-  for(auto t : *afpTracks)
-    ATH_MSG_INFO("\t" << t->stationID()<<" "<<t->xLocal()<<" "<<t->yLocal());
+    if(event_number_jet == event_number)
+    {
+      //std::cout << "Event number: " << event_number_jet << std::endl;
+      //set the current position to the next line else keep it same
+      current_pos = jet_file.tellg();
 
-  
-  // Protons
-  ANA_MSG_INFO("===== PROTONS =====");
-  ANA_MSG_INFO("Event contains " << m_afpTool->protons()->size() << " AFP protons");
-
-  for(auto proton : *(m_afpTool->protons())) {
-
-    const int nTracks = proton->nTracks();
-
-    ATH_MSG_INFO("\t" << proton->px() << ", " << proton->py() << ", " << proton->pz() << ", " << proton->e() << ", chi2: " << proton->chi2() << ", nTracks: " << nTracks);
-
-    for (int it = 0; it < nTracks; it++) {
-      auto track = proton->track(it);
-      ATH_MSG_INFO("\t\t" << track->stationID()<<" "<<track->xLocal()<<" "<<track->yLocal());
+      int nclusters[4][4][2]; // 4 stations, 4 layers, 2 values
+       
+    for(int i = 0; i < 4; i++){
+      for(int j = 0; j < 4; j++){
+        nclusters[i][j][0] = 0;
+        nclusters[i][j][1] = 0;
+      }
     }
-  }
 
-  // Systematics for AFP (optional)
-  /* {
-    // Reset afpTool to default state
-    m_afpTool->reset();
-  } */
+
+      // calculate the number of clusters in each station and layer and the x position of each cluster in the event
+      for (auto cluster : *(m_afpTool->clusters()))
+      {
+       // std::cout << "Station: " << cluster->stationID() << " Layer: " << cluster->pixelLayerID() << " x: " << cluster->xLocal() << " clusterID: " << clusters_id << std::endl;
+        int s = cluster->stationID();
+        int l = cluster->pixelLayerID();
+        float x = cluster->xLocal();
+        nclusters[s][l][0]++;
+        clusters_id++;
+        nclusters[s][l][1] = clusters_id;
+        myMap[clusters_id] = x;
+        
+      }
+      //check if the clusters are being read correctly
+      
+
+    
+      //std::cout << "Number of clusters in station 0: " << nclusters_station_0 << std::endl;
+      hist("cluster_multiplicity")->Fill(nclusters[2][0][0] + nclusters[2][1][0] + nclusters[2][2][0] + nclusters[2][3][0] + nclusters[3][0][0] + nclusters[3][1][0] + nclusters[3][2][0] + nclusters[3][3][0]);
+      TLorentzVector leadingJetVec = TLorentzVector(leading_jet_px, leading_jet_py, leading_jet_pz, leading_jet_e);
+      TLorentzVector subleadingJetVec = TLorentzVector(subleading_jet_px, subleading_jet_py, subleading_jet_pz, subleading_jet_e);
+      TLorentzVector sum = leadingJetVec + subleadingJetVec;
+            
+
+      //count the number of layers in each station with exactly 1 cluster and store it in a map
+      int number_of_layers_with_1_cluster[4] = {0, 0, 0, 0};
+      for(int i = 0; i < 4; i++)
+      {
+        int count = 0;
+        for(int j = 0; j < 4; j++)
+        {
+          if(nclusters[i][j][0] == 1)
+          {
+            count++;
+          }
+        }
+        number_of_layers_with_1_cluster[i] = count;
+      }
+           
+      
+      if(number_of_layers_with_1_cluster[0] >= 3 && number_of_layers_with_1_cluster[1] >= 3)
+      {
+        //std::cout<<"Event number: "<<event_number_jet<<"\t A loose"<<std::endl;
+        float xi = sum.M() * std::exp(sum.Rapidity()) / (13.6 * 1e6);
+        int id = nclusters[0][0][1];
+        float x_pos_A = myMap[id];
+        //std::cout<<"xi: "<<xi<<"\t x_pos_A: "<<x_pos_A<<" id: "<<id<<"x_pos_A: "<<x_pos_A<<"xi: "<<xi<<std::endl;
+        hist("xi_vs_x_pos_A_loose")->Fill(x_pos_A, xi);
+      }
+      if(number_of_layers_with_1_cluster[2] >= 3 && number_of_layers_with_1_cluster[3] >= 3)
+      {
+        //std::cout<<"Event number: "<<event_number_jet<<"\t C loose"<<std::endl;
+        float xi = sum.M() * std::exp(-sum.Rapidity()) / (13.6 * 1e6);
+        int id = nclusters[2][0][1];
+        float x_pos_A = myMap[id];
+        //std::cout<<"xi: "<<xi<<"\t x_pos_A: "<<x_pos_A<<" id: "<<id<<"x_pos_A: "<<x_pos_A<<"xi: "<<xi<<std::endl;
+        hist("xi_vs_x_pos_C_loose")->Fill(x_pos_A, xi);
+      }
+      if(number_of_layers_with_1_cluster[0] == 4 && number_of_layers_with_1_cluster[1] == 4)
+      {
+        //std::cout<<"Event number: "<<event_number_jet<<"\t A tight"<<std::endl;
+        float xi = sum.M() * std::exp(sum.Rapidity()) / (13.6 * 1e6);
+        int id = nclusters[0][0][1];
+        float x_pos_A = myMap[id];
+        //std::cout<<"xi: "<<xi<<"\t x_pos_A: "<<x_pos_A<<" id: "<<id<<"x_pos_A: "<<x_pos_A<<"xi: "<<xi<<std::endl;
+        hist("xi_vs_x_pos_A_tight")->Fill(x_pos_A, xi);
+      }
+      if(number_of_layers_with_1_cluster[2] == 4 && number_of_layers_with_1_cluster[3] == 4)
+      {
+        //std::cout<<"Event number: "<<event_number_jet<<"\t C tight"<<std::endl;
+        float xi = sum.M() * std::exp(-sum.Rapidity()) / (13.6 * 1e6);
+        int id = nclusters[2][0][1];
+        float x_pos_A = myMap[id];
+        //std::cout<<"xi: "<<xi<<"\t x_pos_A: "<<x_pos_A<<" id: "<<id<<"x_pos_A: "<<x_pos_A<<"xi: "<<xi<<std::endl;
+        hist("xi_vs_x_pos_C_tight")->Fill(x_pos_A, xi);
+      }
+    
+    
+    } // if(event_number_jet == event_number) ends here
+
+
 
   return StatusCode::SUCCESS;
 }
 
-
-
-StatusCode AfpAnalysisExample :: finalize ()
+StatusCode AfpAnalysisExample ::finalize()
 {
 
+  xAOD::TEvent *event = wk()->xaodEvent();
+  TFile *file = wk()->getOutputFile("skim");
+  ANA_CHECK(event->finishWritingTo(file));
+  
+  if(jet_file.is_open())
+  {
+    jet_file.close();
+    std::cout << "File is closed" << std::endl;
+  }
 
   return StatusCode::SUCCESS;
 }
-
-
 
 // vim: expandtab tabstop=8 shiftwidth=2 softtabstop=2

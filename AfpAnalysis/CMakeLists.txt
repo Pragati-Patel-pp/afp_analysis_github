@@ -14,7 +14,8 @@ atlas_add_library (AfpAnalysisLib
   AfpAnalysis/*.h AfpAnalysis/*.ihh src/*.cxx ${AfpAnalysisDictSource}
   PUBLIC_HEADERS AfpAnalysis
   INCLUDE_DIRS
-  LINK_LIBRARIES xAODRootAccess xAODForward AsgTools xAODEventInfo AfpAnalysisToolsLib AnaAlgorithmLib ${extra_libs}
+  LINK_LIBRARIES xAODJet xAODCore xAODCaloEvent TrigDecisionToolLib TrigConfInterfaces JetCalibToolsLib JetJvtEfficiencyLib JetSelectorToolsLib AssociationUtilsLib AsgAnalysisInterfaces
+  xAODTriggerCnvLib  xAODRootAccess xAODForward AsgTools xAODEventInfo AfpAnalysisToolsLib AnaAlgorithmLib ${extra_libs}
   PRIVATE_LINK_LIBRARIES )
 
 if( XAOD_STANDALONE )

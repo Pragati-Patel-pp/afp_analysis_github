@@ -1,6 +1,8 @@
 #pragma once
 
 #include "AfpAnalysisTools/IAfpAnalysisTool.h"
+#include <TrigConfInterfaces/ITrigConfigTool.h>
+#include <TrigDecisionTool/TrigDecisionTool.h>
 
 #ifdef XAOD_STANDALONE
   #include "EventLoop/Job.h"
@@ -11,6 +13,7 @@
 #include "AsgTools/AnaToolHandle.h"
 #include "AsgTools/MessageCheckAsgTools.h" // ASG status code check
 #include "AnaAlgorithm/AnaAlgorithm.h"
+#include "JetCalibTools/IJetCalibrationTool.h"
 
 class AfpAnalysisExample : public EL::AnaAlgorithm
 {
@@ -22,6 +25,10 @@ class AfpAnalysisExample : public EL::AnaAlgorithm
     virtual StatusCode initialize ();
     virtual StatusCode execute ();
     virtual StatusCode finalize ();
+    std::string m_Trigger{};
+    
+    
+
 
   private:
 
@@ -29,7 +36,17 @@ class AfpAnalysisExample : public EL::AnaAlgorithm
     // std::vector<CP::SystematicSet> m_systematicsList;
 
     /// AfpAnalysisToolbox handle
-    asg::AnaToolHandle<AFP::IAfpAnalysisTool> m_afpTool; //!
+     asg::AnaToolHandle<AFP::IAfpAnalysisTool> m_afpTool; //!
+     asg::AnaToolHandle<TrigConf::ITrigConfigTool> m_trigConfigTool; // !
+     asg::AnaToolHandle<Trig::TrigDecisionTool> m_trigDecisionTool; // !
+     asg::AnaToolHandle<IJetCalibrationTool> m_jetCalibration; // !
+     // read a file
+     std::ifstream jet_file;
+     std::streampos current_pos = 0;
+
+
+     
+
 
 };
 

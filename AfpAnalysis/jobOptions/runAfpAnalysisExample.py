@@ -13,13 +13,25 @@ ROOT.xAOD.Init().ignore()
 import os
 sh = ROOT.SH.SampleHandler()
 sh.setMetaString( 'nc_tree', 'CollectionTree' )
-inputFilePath = "/eos/atlas/atlascerngroupdisk/det-afp/AnalysisData/Tutorial/data17_13TeV.00331975.physics_Main.merge.AOD.r10203_p3399/"
-ROOT.SH.ScanDir().filePattern( '*' ).scan( sh, inputFilePath )
+
+#inputFilePath = "/eos/user/p/prpatel/data22_13p6TeV.00428770.physics_Main.deriv.DAOD_PHYS.r13928_p5279_p5858/"
+#ROOT.SH.ScanDir().filePattern('*.1' ).scan( sh, inputFilePath )
+#ROOT.SH.ScanDir().filePattern('DAOD_PHYS.34860090._000003.pool.root.1' ).scan( sh, inputFilePath )
+
+inputFilePath = "/eos/user/p/prpatel/data22_13p6TeV.00428770.physics_MinBias.merge.AOD.r14956_p5604_tid34714990_00"
+ROOT.SH.ScanDir().filePattern('AOD.34714990._000013.pool.root.1' ).scan( sh, inputFilePath )
+
+#ROOT.SH.scanRucio(sh,"data22_13p6TeV.00428770.physics_MinBias.merge.AOD.r14956_p5604_tid34714990_00/")
+#sh.setMetaString('nc_grid_filter','AOD.')
+
 
 job = ROOT.EL.Job()
 job.sampleHandler( sh )
-job.options().setDouble( ROOT.EL.Job.optMaxEvents, 10 )
+job.options().setDouble( ROOT.EL.Job.optMaxEvents, -1 )
+#job.options().setString(ROOT.EL.Job.optSubmitFlags,'--match="*"')
 
+out = ROOT.EL.OutputStream( "skim" , "xAOD" )
+job.outputAdd ( out )
 # configure algorithm
 from AnaAlgorithm.AnaAlgorithmConfig import AnaAlgorithmConfig
 config = AnaAlgorithmConfig( 'AfpAnalysisExample')
@@ -54,4 +66,12 @@ job.algsAdd( config )
 
 driver = ROOT.EL.DirectDriver()
 driver.submit( job, options.submission_dir )
+#driver=ROOT.EL.PrunDriver()
+#driver.options().setDouble(ROOT.EL.Job.optGridNFilesPerJob, 5)
+#driver.options().setDouble(ROOT.EL.Job.optGridMaxNFilesPerJob, 5)
+#driver.options().setString('nc_grid_filter','*')
+
+#driver.options().setString("nc_outputSampleName", "user.prpatel.%in:name[2]%.%in:name[6]%.all_triggers.v0");
+#driver.submitOnly(job,submission_dir)
+
 
