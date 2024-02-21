@@ -43,10 +43,10 @@ StatusCode AfpAnalysisExample ::initialize()
 
 
 
-  ANA_CHECK(book(TH2F("xi_vs_x_pos_A_loose", "xi vs x_pos_A_loose", 100, -20, 0, 100, 0, 1)));
-  ANA_CHECK(book(TH2F("xi_vs_x_pos_C_loose", "xi vs x_pos_C_loose", 100, -20, 0, 100, 0, 1)));
-  ANA_CHECK(book(TH2F("xi_vs_x_pos_A_tight", "xi vs x_pos_A_tight", 100, -20, 0, 100, 0, 1)));
-  ANA_CHECK(book(TH2F("xi_vs_x_pos_C_tight", "xi vs x_pos_C_tight", 100, -20, 0, 100, 0, 1)));
+  ANA_CHECK(book(TH2F("xi_vs_x_pos_A_loose", "xi vs x_pos_A_loose", 100, -20, 0, 100, 0, 0.2)));
+  ANA_CHECK(book(TH2F("xi_vs_x_pos_C_loose", "xi vs x_pos_C_loose", 100, -20, 0, 100, 0, 0.2)));
+  ANA_CHECK(book(TH2F("xi_vs_x_pos_A_tight", "xi vs x_pos_A_tight", 100, -20, 0, 100, 0, 0.2)));
+  ANA_CHECK(book(TH2F("xi_vs_x_pos_C_tight", "xi vs x_pos_C_tight", 100, -20, 0, 100, 0, 0.2)));
 
   ANA_CHECK(book(TH1F("cluster_multiplicity", "cluster_multiplicity", 20,-0.5,19.5)));
 
@@ -193,7 +193,7 @@ StatusCode AfpAnalysisExample ::execute()
     
     } // if(event_number_jet == event_number) ends here
 
-
+  
 
   return StatusCode::SUCCESS;
 }
