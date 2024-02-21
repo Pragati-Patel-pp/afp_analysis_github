@@ -6,6 +6,7 @@ parser.add_option( '-s', '--submission-dir', dest = 'submission_dir',
     action = 'store', type = 'string', default = 'submitDir',
     help = 'Submission directory for EventLoop' )
 ( options, args ) = parser.parse_args()
+submission_dir = options.submission_dir
 
 import ROOT
 ROOT.xAOD.Init().ignore()
@@ -28,10 +29,19 @@ ROOT.SH.ScanDir().filePattern('AOD.34714990._000013.pool.root.1' ).scan( sh, inp
 job = ROOT.EL.Job()
 job.sampleHandler( sh )
 job.options().setDouble( ROOT.EL.Job.optMaxEvents, -1 )
-#job.options().setString(ROOT.EL.Job.optSubmitFlags,'--match="*"')
+job.options().setString(ROOT.EL.Job.optSubmitFlags,'--match="*"')
 
 out = ROOT.EL.OutputStream( "skim" , "xAOD" )
 job.outputAdd ( out )
+
+# add another output stream to the job (for testing) - this one writes out a .txt file with the event number 
+outTxt = ROOT.EL.OutputStream( "txt" )
+outTxt.setDataType("text")
+outTxt.setTree("CollectionTree")
+outTxt.setFile("output.txt")
+job.outputAdd ( outTxt )
+
+
 # configure algorithm
 from AnaAlgorithm.AnaAlgorithmConfig import AnaAlgorithmConfig
 config = AnaAlgorithmConfig( 'AfpAnalysisExample')
@@ -70,7 +80,6 @@ driver.submit( job, options.submission_dir )
 #driver.options().setDouble(ROOT.EL.Job.optGridNFilesPerJob, 5)
 #driver.options().setDouble(ROOT.EL.Job.optGridMaxNFilesPerJob, 5)
 #driver.options().setString('nc_grid_filter','*')
-
 #driver.options().setString("nc_outputSampleName", "user.prpatel.%in:name[2]%.%in:name[6]%.all_triggers.v0");
 #driver.submitOnly(job,submission_dir)
 

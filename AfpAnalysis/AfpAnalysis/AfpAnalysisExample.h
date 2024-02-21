@@ -17,7 +17,8 @@
 
 class AfpAnalysisExample : public EL::AnaAlgorithm
 {
-  
+  std::ofstream my_output_file;
+
   public:
    
     AfpAnalysisExample (const std::string& name, ISvcLocator* pSvcLocator);
@@ -41,8 +42,12 @@ class AfpAnalysisExample : public EL::AnaAlgorithm
      asg::AnaToolHandle<Trig::TrigDecisionTool> m_trigDecisionTool; // !
      asg::AnaToolHandle<IJetCalibrationTool> m_jetCalibration; // !
      // read a file
-     std::ifstream jet_file;
-     std::streampos current_pos = 0;
+     //std::ifstream jet_file;
+     //std::streampos current_pos = 0;
+
+     //create a file
+     // std::ofstream jet_event_file;
+     // std::string jet_event_file_name = "all_aod_event.txt";
 
 
      
