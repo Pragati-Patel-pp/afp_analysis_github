@@ -14,11 +14,13 @@
 #include <iostream>
 #include <cmath>
 #include <fstream>
-
+#include <TTree.h>
+#include <TSystem.h>
 AfpAnalysisExample ::AfpAnalysisExample(const std::string &name, ISvcLocator *pSvcLocator) : EL::AnaAlgorithm(name, pSvcLocator),
                                                                                              m_afpTool("AFP::AfpAnalysisTool/afpTool", this),
                                                                                              m_trigConfigTool("TrigConf::xAODConfigTool/xAODConfigTool"),
                                                                                              m_trigDecisionTool("Trig::TrigDecisionTool/TrigDecisionTool")
+                                                                                          
                                                                                              //jet_event_file("/eos/user/p/prpatel/afp_analysis/run/all_aod_event.txt", std::ios::app)
 // current_pos(0)
 //  aod_event_file("/eos/user/p/prpatel/afp_analysis/run/aod_event.txt")
@@ -39,24 +41,23 @@ StatusCode AfpAnalysisExample ::initialize()
   ANA_CHECK(m_trigDecisionTool.setProperty("ConfigTool", m_trigConfigTool.getHandle()));
   ANA_CHECK(m_trigDecisionTool.setProperty("TrigDecisionKey", "xTrigDecision"));
   ANA_CHECK(m_trigDecisionTool.initialize());
-  // ANA_CHECK(m_triggerMenuMetaDataTool.initialize());
-
-  // ANA_CHECK(book(TH2F("xi_vs_x_pos_A_loose", "xi vs x_pos_A_loose", 100, -20, 0, 100, 0, 1)));
-  // ANA_CHECK(book(TH2F("xi_vs_x_pos_C_loose", "xi vs x_pos_C_loose", 100, -20, 0, 100, 0, 1)));
-  // ANA_CHECK(book(TH2F("xi_vs_x_pos_A_tight", "xi vs x_pos_A_tight", 100, -20, 0, 100, 0, 1)));
-  // ANA_CHECK(book(TH2F("xi_vs_x_pos_C_tight", "xi vs x_pos_C_tight", 100, -20, 0, 100, 0, 1)));
-
-  // ANA_CHECK(book(TH1F("cluster_multiplicity", "cluster_multiplicity", 20,-0.5,19.5)));
+  //create an object to store the event number
+  //ANA_CHECK(book(TH1F("event_number", "event_number", 1, 0, -1)));
 
   xAOD::TEvent *event = wk()->xaodEvent();
   TFile *file = wk()->getOutputFile("skim");
   ANA_CHECK(event->writeTo(file));
 
-  TFile *file2 = wk()->getOutputFile("txt");
-  ANA_CHECK(event->writeTo(file2));
 
+  std::string file_name = wk()->inputFileName();
+  //std::cout << "file_name = " << file_name << std::endl;
 
- 
+  mytree = new TTree("TreeHits","TreeHits");
+  wk()->addOutput(mytree);
+
+  //mytree->Branch("ev",&ev,"ev/I");
+  //mytree->Branch(file_name.c_str(), &ev, (file_name + "/I").c_str() );
+
 
   return StatusCode::SUCCESS;
 }
@@ -64,14 +65,32 @@ StatusCode AfpAnalysisExample ::initialize()
 StatusCode AfpAnalysisExample ::execute()
 {
   xAOD::TEvent *event = wk()->xaodEvent();
+  std::string currentFileName = wk()->inputFileName();
 
-  // const xAOD::JetContainer* AntiKt4EMPFlowJets = 0;
-  // ANA_CHECK(event->retrieve( AntiKt4EMPFlowJets, "AntiKt4EMPFlowJets" ) );
 
+if (currentFileName != m_lastFileName) {
+    std::cout << "Processing a new file: " << currentFileName << std::endl;
+
+    m_lastFileName = currentFileName;
+}
+
+
+
+
+if (!mytree->GetBranch(currentFileName.c_str())) {
+    mytree->Branch(currentFileName.c_str(), &ev, (currentFileName + "/I").c_str());
+}
   const xAOD::EventInfo *eventInfo = 0;
   ANA_CHECK(event->retrieve(eventInfo, "EventInfo"));
 
-  // write the event number to the 
+  //print luminosity block number only if it changes
+  if (eventInfo->lumiBlock() != m_lumiBlock) {
+    m_lumiBlock = eventInfo->lumiBlock();
+    std::cout << "Processing luminosity block " << m_lumiBlock << std::endl;
+  }
+
+  ev = eventInfo->eventNumber();
+  mytree->Fill();
 
   return StatusCode::SUCCESS;
 }
@@ -83,9 +102,8 @@ StatusCode AfpAnalysisExample ::finalize()
   TFile *file = wk()->getOutputFile("skim");
   ANA_CHECK(event->finishWritingTo(file));
 
-  TFile *file2 = wk()->getOutputFile("txt");
-  ANA_CHECK(event->finishWritingTo(file2));
-  
+  //event_number_file.close();
+
 
   return StatusCode::SUCCESS;
 }

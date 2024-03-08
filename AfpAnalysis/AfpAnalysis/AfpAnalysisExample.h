@@ -28,6 +28,15 @@ class AfpAnalysisExample : public EL::AnaAlgorithm
     virtual StatusCode finalize ();
     std::string m_Trigger{};
     
+    int event_number = 0;
+    TTree* mytree; 
+    int count = 0;
+    std::string m_lastFileName = "";
+    std::string m_lumiBlock;
+    // initailize the empty string
+    //define a vector to store the event number
+    int ev = 0;
+    //std::ofstream event_number_file;
     
 
 

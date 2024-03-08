@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-
+import os
 import optparse
 parser = optparse.OptionParser()
 parser.add_option( '-s', '--submission-dir', dest = 'submission_dir',
@@ -15,12 +15,16 @@ import os
 sh = ROOT.SH.SampleHandler()
 sh.setMetaString( 'nc_tree', 'CollectionTree' )
 
+includeFilePath = "/eos/user/p/prpatel/data22_13p6TeV/"
+ROOT.SH.ScanDir().filePattern('*' ).scan( sh, includeFilePath )
+
 #inputFilePath = "/eos/user/p/prpatel/data22_13p6TeV.00428770.physics_Main.deriv.DAOD_PHYS.r13928_p5279_p5858/"
 #ROOT.SH.ScanDir().filePattern('*.1' ).scan( sh, inputFilePath )
 #ROOT.SH.ScanDir().filePattern('DAOD_PHYS.34860090._000003.pool.root.1' ).scan( sh, inputFilePath )
 
-inputFilePath = "/eos/user/p/prpatel/data22_13p6TeV.00428770.physics_MinBias.merge.AOD.r14956_p5604_tid34714990_00"
-ROOT.SH.ScanDir().filePattern('AOD.34714990._000013.pool.root.1' ).scan( sh, inputFilePath )
+#inputFilePath = "/eos/user/p/prpatel/data22_13p6TeV.00428770.physics_MinBias.merge.AOD.r14956_p5604_tid34714990_00"
+#ROOT.SH.ScanDir().filePattern('AOD.34714990._000013.pool.root.1' ).scan( sh, inputFilePath )
+#ROOT.SH.ScanDir().filePattern('*.1' ).scan( sh, inputFilePath )
 
 #ROOT.SH.scanRucio(sh,"data22_13p6TeV.00428770.physics_MinBias.merge.AOD.r14956_p5604_tid34714990_00/")
 #sh.setMetaString('nc_grid_filter','AOD.')
@@ -32,14 +36,13 @@ job.options().setDouble( ROOT.EL.Job.optMaxEvents, -1 )
 job.options().setString(ROOT.EL.Job.optSubmitFlags,'--match="*"')
 
 out = ROOT.EL.OutputStream( "skim" , "xAOD" )
-job.outputAdd ( out )
+job.outputAdd(out)
 
-# add another output stream to the job (for testing) - this one writes out a .txt file with the event number 
-outTxt = ROOT.EL.OutputStream( "txt" )
-outTxt.setDataType("text")
-outTxt.setTree("CollectionTree")
-outTxt.setFile("output.txt")
-job.outputAdd ( outTxt )
+
+#job.outputAdd ( ROOT.EL.OutputStream( "event_number.txt" ,'xAOD' ) )
+# attach xAoD objects to output file
+
+
 
 
 # configure algorithm
@@ -80,7 +83,7 @@ driver.submit( job, options.submission_dir )
 #driver.options().setDouble(ROOT.EL.Job.optGridNFilesPerJob, 5)
 #driver.options().setDouble(ROOT.EL.Job.optGridMaxNFilesPerJob, 5)
 #driver.options().setString('nc_grid_filter','*')
-#driver.options().setString("nc_outputSampleName", "user.prpatel.%in:name[2]%.%in:name[6]%.all_triggers.v0");
+#driver.options().setString("nc_outputSampleName", "user.prpatel.%in:name[2]%.%in:name[6]%.event_numbers_new.v0");
 #driver.submitOnly(job,submission_dir)
 
 
