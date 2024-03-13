@@ -21,7 +21,9 @@ sh.setMetaString( 'nc_tree', 'CollectionTree' )
 #inputFilePath = "/eos/user/p/prpatel/data22_13p6TeV.00428770.physics_MinBias.merge.AOD.r14956_p5604_tid34714990_00"
 #ROOT.SH.ScanDir().filePattern('AOD.34714990._000013.pool.root.1' ).scan( sh, inputFilePath )
 inputFilePath = "/eos/user/p/prpatel/data22_13p6TeV"
-ROOT.SH.ScanDir().filePattern('*.1' ).scan( sh, inputFilePath )
+#ROOT.SH.ScanDir().filePattern('AOD.34714990._000002.pool.root.1' ).scan( sh, inputFilePath )
+ROOT.SH.ScanDir().filePattern('*.1' ).scan( sh, inputFilePath)
+
 
 #ROOT.SH.scanRucio(sh,"data22_13p6TeV.00428770.physics_MinBias.merge.AOD.r14956_p5604_tid34714990_00/")
 #sh.setMetaString('nc_grid_filter','AOD.')
